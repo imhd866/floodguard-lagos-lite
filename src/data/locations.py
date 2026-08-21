@@ -1,0 +1,17 @@
+PILOT_LOCATIONS = {
+    "Ojota / Ketu": {"latitude": 6.5867, "longitude": 3.3833, "low_elevation": .55,
+                       "waterway_proximity": .60, "historical_water": .45,
+                       "infrastructure_exposure": .70, "population_exposure": .80},
+    "Lekki": {"latitude": 6.4698, "longitude": 3.5852, "low_elevation": .85,
+              "waterway_proximity": .85, "historical_water": .65,
+              "infrastructure_exposure": .75, "population_exposure": .70},
+    "Ajah": {"latitude": 6.4692, "longitude": 3.5649, "low_elevation": .80,
+             "waterway_proximity": .80, "historical_water": .60,
+             "infrastructure_exposure": .65, "population_exposure": .65},
+    "Victoria Island": {"latitude": 6.4281, "longitude": 3.4219, "low_elevation": .90,
+                        "waterway_proximity": .90, "historical_water": .70,
+                        "infrastructure_exposure": .85, "population_exposure": .70},
+    "Ikorodu": {"latitude": 6.6194, "longitude": 3.5105, "low_elevation": .55,
+                "waterway_proximity": .70, "historical_water": .50,
+                "infrastructure_exposure": .55, "population_exposure": .60},
+}

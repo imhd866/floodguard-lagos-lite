@@ -1,0 +1,41 @@
+# FloodGuard Lagos Lite
+
+FloodGuard Lagos Lite is a free-first decision-support prototype for indicative flood disruption risk in selected Lagos communities. It combines live Open-Meteo forecasts with transparent, replaceable risk factors and produces a calm, copy-ready advisory.
+
+> FloodGuard Lagos Lite is a decision-support and planning tool. It does not replace official emergency alerts or human judgment.
+
+## Phase 1 scope
+
+- Pilot location selector (starting with Ojota/Ketu)
+- Live 72-hour rainfall forecast from Open-Meteo
+- Explainable weighted risk score
+- Rule-based advisory that works without an LLM
+- Optional NVIDIA NIM rewrite when credentials are configured
+- Tests for scoring and advisory behavior
+
+## Run locally
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+streamlit run app/streamlit_app.py
+```
+
+The live weather call needs internet access. If it fails, the app clearly reports the error rather than presenting stale data as live.
+
+## Configuration
+
+Copy `.env.example` to `.env`. NVIDIA credentials are optional; the deterministic advisory is the default and keeps the app functional without paid services.
+
+## Risk model
+
+The score follows the project guide's weights: rainfall 35%, elevation 20%, waterway proximity 15%, historical water recurrence 15%, nearby infrastructure 10%, and population exposure 5%. Phase 1 uses documented pilot-area baseline indicators for all factors except live rainfall. These are prototype assumptions—not measured claims—and the UI labels them accordingly.
+
+## Roadmap
+
+See [docs/model_plan.md](docs/model_plan.md) and [docs/data_sources.md](docs/data_sources.md).
+
+## License
+
+Apache-2.0. Data providers retain their respective licenses and attribution requirements.

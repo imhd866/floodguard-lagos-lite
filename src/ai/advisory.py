@@ -13,6 +13,7 @@ def build_advisory(location: str, result: RiskResult, rainfall_24h_mm: float) ->
             f"Indicative disruption risk: {result.label} ({result.score}/100)\n"
             f"Forecast rainfall in the next 24 hours: {rainfall_24h_mm:.1f} mm\n\n"
             f"Suggested action: {action}\n\n"
-            "Uncertainty: Non-rainfall indicators are prototype area baselines pending validation "
-            "with elevation, OSM, population, and historical-water datasets. Human review is required.\n\n"
+            "Uncertainty: Some non-rainfall indicators may use prototype area baselines. "
+            "Review the dashboard data note for the live and baseline inputs used. "
+            "Human review is required.\n\n"
             f"{DISCLAIMER}")

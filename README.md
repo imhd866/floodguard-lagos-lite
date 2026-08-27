@@ -6,8 +6,9 @@ FloodGuard Lagos Lite is a free-first decision-support prototype for indicative 
 
 ## Phase 1 scope
 
-- Pilot location selector (starting with Ojota/Ketu)
+- Selector for all 10 pilot locations from the project guide
 - Live 72-hour rainfall forecast from Open-Meteo
+- Live OpenStreetMap roads, waterways, schools, and markets within 1.5 km
 - Explainable weighted risk score
 - Rule-based advisory that works without an LLM
 - Optional NVIDIA NIM rewrite when credentials are configured
@@ -22,7 +23,7 @@ pip install -r requirements.txt
 streamlit run app/streamlit_app.py
 ```
 
-The live weather call needs internet access. If it fails, the app clearly reports the error rather than presenting stale data as live.
+The live weather and OpenStreetMap calls need internet access. Weather failure stops the result; OSM failure is clearly reported and the risk model uses the documented prototype baselines instead.
 
 ## Configuration
 

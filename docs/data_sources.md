@@ -3,7 +3,7 @@
 | Source | MVP use | Status |
 |---|---|---|
 | Open-Meteo | Hourly precipitation forecast | Implemented live |
-| OpenStreetMap | Roads, schools, markets, waterways | Phase 2 |
+| OpenStreetMap/Overpass | Live roads, schools, markets, waterways within 1.5 km | Implemented live |
 | geoBoundaries | Lagos/LGA boundaries | Phase 2 |
 | Copernicus DEM | Elevation indicator | Phase 2 |
 | WorldPop | Population exposure | Phase 2 |

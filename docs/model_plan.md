@@ -7,3 +7,5 @@ The OSM milestone replaces two baselines when a live query succeeds. Waterway pr
 Phase 2 replaces baselines incrementally with measured features from OpenStreetMap, Copernicus DEM, WorldPop, and a licensed historical-water source. Every feature should retain its source, retrieval time, transformation, and quality flag.
 
 An LLM may rewrite a computed advisory for clarity. It must not change the score, invent evidence, remove uncertainty language, or suppress the disclaimer. The deterministic template remains the fallback.
+
+The NVIDIA NIM integration enforces that boundary by checking the rewritten output for the selected location, exact score, and complete responsible-use disclaimer. Failed API calls or failed checks return the deterministic draft.

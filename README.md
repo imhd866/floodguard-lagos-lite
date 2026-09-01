@@ -13,6 +13,8 @@ FloodGuard Lagos Lite is a free-first decision-support prototype for indicative 
 - Rule-based advisory that works without an LLM
 - Optional NVIDIA NIM rewrite when credentials are configured
 - Tests for scoring and advisory behavior
+- Optional NVIDIA NIM wording with fact-preservation checks and automatic fallback
+- Local community-report preparation with official Lagos State handoff links
 
 ## Run locally
 
@@ -28,6 +30,8 @@ The live weather and OpenStreetMap calls need internet access. Weather failure s
 ## Configuration
 
 Copy `.env.example` to `.env`. NVIDIA credentials are optional; the deterministic advisory is the default and keeps the app functional without paid services.
+
+Community reports are prepared locally for review. The prototype does not transmit reports or claim receipt by Lagos State. Immediate emergencies are directed to 112 or 767; non-emergency handoff links point to Lagos State Citizens Gate.
 
 ## Risk model
 

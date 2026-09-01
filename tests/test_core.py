@@ -1,6 +1,12 @@
+from datetime import datetime
+
+import pytest
+
 from src.ai.advisory import DISCLAIMER, build_advisory
+from src.ai.nim_client import NIMServiceError, rewrite_advisory
 from src.data.locations import PILOT_LOCATIONS
 from src.data.osm import fetch_infrastructure
+from src.data.reports import CommunityFloodReport, build_report_text
 from src.risk.scoring import RiskResult, calculate_risk, rainfall_indicator
 
 def test_rainfall_indicator_is_bounded():
@@ -56,3 +62,60 @@ def test_osm_summary_parses_features_and_builds_indicators(monkeypatch):
     assert summary.counts == {"road": 1, "school": 1, "market": 0, "waterway": 1}
     assert 0 < summary.waterway_indicator <= 1
     assert 0 < summary.infrastructure_indicator <= 1
+
+def test_community_report_is_reviewable_and_warns_about_emergencies():
+    text = build_report_text(CommunityFloodReport(
+        area="Ikoyi",
+        incident_type="Flooded road",
+        severity="Moderate",
+        location_description="Near Example Market",
+        details="Water is covering one traffic lane.",
+        observed_at=datetime(2026, 9, 1, 14, 30),
+    ))
+    assert "REVIEW BEFORE SENDING" in text
+    assert "Ikoyi" in text
+    assert "112 or 767" in text
+    assert "not been independently verified" in text
+
+def test_nim_rewrite_accepts_only_fact_preserving_output(monkeypatch):
+    draft = build_advisory("Ikoyi", RiskResult(55, "Moderate", {}), 21.4)
+
+    class FakeResponse:
+        def raise_for_status(self):
+            return None
+
+        def json(self):
+            return {"choices": [{"message": {"content": draft}}]}
+
+    monkeypatch.setattr("src.ai.nim_client.requests.post", lambda *args, **kwargs: FakeResponse())
+    assert rewrite_advisory(draft, "Ikoyi", 55, api_key="test", base_url="https://example.test/v1",
+                            model="test/model") == draft
+
+def test_nim_rewrite_rejects_changed_facts(monkeypatch):
+    class FakeResponse:
+        def raise_for_status(self):
+            return None
+
+        def json(self):
+            return {"choices": [{"message": {"content": "Everything is safe."}}]}
+
+    monkeypatch.setattr("src.ai.nim_client.requests.post", lambda *args, **kwargs: FakeResponse())
+    with pytest.raises(NIMServiceError):
+        rewrite_advisory("draft", "Ikoyi", 55, api_key="test",
+                         base_url="https://example.test/v1", model="test/model")
+
+def test_nim_rewrite_rejects_changed_rainfall_number(monkeypatch):
+    draft = build_advisory("Ikoyi", RiskResult(55, "Moderate", {}), 21.4)
+    changed = draft.replace("21.4 mm", "8.0 mm")
+
+    class FakeResponse:
+        def raise_for_status(self):
+            return None
+
+        def json(self):
+            return {"choices": [{"message": {"content": changed}}]}
+
+    monkeypatch.setattr("src.ai.nim_client.requests.post", lambda *args, **kwargs: FakeResponse())
+    with pytest.raises(NIMServiceError):
+        rewrite_advisory(draft, "Ikoyi", 55, api_key="test",
+                         base_url="https://example.test/v1", model="test/model")

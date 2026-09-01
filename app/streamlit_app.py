@@ -1,16 +1,25 @@
+import os
 import sys
+from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
 import pydeck as pdk
 import streamlit as st
+from dotenv import load_dotenv
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from src.ai.advisory import DISCLAIMER, build_advisory
+from src.ai.nim_client import NIMServiceError, rewrite_advisory
 from src.data.locations import PILOT_LOCATIONS
 from src.data.osm import OSMServiceError, fetch_infrastructure
+from src.data.reports import (CITIZENS_GATE_URL, CITIZENS_GATE_WHATSAPP_URL,
+                              EMERGENCY_NUMBERS, NON_EMERGENCY_PHONE,
+                              CommunityFloodReport, build_report_text)
 from src.data.weather import WeatherServiceError, fetch_rainfall
 from src.risk.scoring import calculate_risk, rainfall_indicator
+
+load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 st.set_page_config(page_title="FloodGuard Lagos Lite", page_icon="🌧️", layout="wide")
 st.title("FloodGuard Lagos Lite")
@@ -18,6 +27,16 @@ st.caption("Indicative flood disruption risk for planning - not flood prediction
 location_name = st.selectbox("Pilot area", list(PILOT_LOCATIONS))
 location = PILOT_LOCATIONS[location_name]
 st.caption(f"10 pilot areas available · map radius: 1.5 km around {location_name}")
+
+nim_api_key = os.getenv("NVIDIA_API_KEY", "")
+nim_base_url = os.getenv("NVIDIA_BASE_URL", "https://integrate.api.nvidia.com/v1")
+nim_model = os.getenv("NVIDIA_MODEL", "meta/llama-3.3-70b-instruct")
+nim_configured = bool(nim_api_key and nim_model)
+use_nim = st.checkbox("Improve advisory wording with NVIDIA NIM",
+                      value=nim_configured, disabled=not nim_configured)
+if not nim_configured:
+    st.caption("Optional AI rewriting is off. Add NVIDIA_API_KEY to .env to enable it; "
+               "risk scoring and advisories still work without AI.")
 
 if st.button("Check live risk", type="primary", use_container_width=True):
     try:
@@ -94,7 +113,76 @@ if st.button("Check live risk", type="primary", use_container_width=True):
             st.info("Waterway and infrastructure indicators are derived from the live OSM query. "
                     "Elevation, historical-water, and population factors remain prototype baselines.")
         st.subheader("Copy-ready advisory")
-        st.code(build_advisory(location_name, risk, forecast.next_24h_mm), language=None)
+        draft_advisory = build_advisory(location_name, risk, forecast.next_24h_mm)
+        advisory = draft_advisory
+        advisory_source = "Verified rule-based advisory"
+        if use_nim:
+            try:
+                advisory = rewrite_advisory(draft_advisory, location_name, risk.score,
+                                            api_key=nim_api_key, base_url=nim_base_url,
+                                            model=nim_model)
+                advisory_source = f"NVIDIA NIM wording · verified facts · {nim_model}"
+            except NIMServiceError:
+                st.warning("AI rewriting was unavailable or failed verification. "
+                           "Showing the verified rule-based advisory instead.")
+        st.code(advisory, language=None)
+        st.caption(advisory_source)
 
 st.divider()
 st.warning(DISCLAIMER)
+
+st.header("Report flooding or blocked drainage")
+st.error("Immediate danger or rescue needed? Call 112 or 767. Do not wait for an online report.")
+emergency_left, emergency_right = st.columns(2)
+emergency_left.link_button(f"Call {EMERGENCY_NUMBERS[0]}", "tel:112",
+                           use_container_width=True, type="primary")
+emergency_right.link_button(f"Call {EMERGENCY_NUMBERS[1]}", "tel:767",
+                            use_container_width=True, type="primary")
+
+st.subheader("Prepare a non-emergency community report")
+st.caption("FloodGuard prepares the text in the current session for your review. It does not "
+           "send it, save it to a database, or claim that Lagos State has received it.")
+with st.form("community_report_form"):
+    report_area = st.selectbox("Area", list(PILOT_LOCATIONS), key="report_area")
+    report_type = st.selectbox("Incident type", ["Flooded road", "Blocked drainage",
+                                                  "Flooded home/business", "Unsafe access route",
+                                                  "Other"])
+    report_severity = st.selectbox("Observed severity", ["Minor", "Moderate", "Severe"])
+    observed_date = st.date_input("Date observed")
+    observed_time = st.time_input("Time observed")
+    location_description = st.text_input("Address or nearby landmark *",
+                                         placeholder="Street, bus stop, school, market, or landmark")
+    report_details = st.text_area("What did you observe? *",
+                                  placeholder="Describe water depth, affected access, people at risk, or blockage")
+    prepare_report = st.form_submit_button("Prepare report for review", type="primary",
+                                           use_container_width=True)
+
+if prepare_report:
+    try:
+        report = CommunityFloodReport(
+            area=report_area,
+            incident_type=report_type,
+            severity=report_severity,
+            location_description=location_description,
+            details=report_details,
+            observed_at=datetime.combine(observed_date, observed_time),
+        )
+        st.session_state["prepared_report"] = build_report_text(report)
+    except ValueError as exc:
+        st.error(str(exc))
+
+if prepared_report := st.session_state.get("prepared_report"):
+    st.success("Report prepared. Review it before choosing an official reporting channel.")
+    st.code(prepared_report, language=None)
+    st.download_button("Download report as text", prepared_report,
+                       file_name="floodguard-community-report.txt", mime="text/plain")
+
+st.subheader("Official Lagos State reporting channels")
+channel_left, channel_middle, channel_right = st.columns(3)
+channel_left.link_button("Open Citizens Gate", CITIZENS_GATE_URL, use_container_width=True)
+channel_middle.link_button("Citizens Gate WhatsApp", CITIZENS_GATE_WHATSAPP_URL,
+                          use_container_width=True)
+channel_right.link_button(f"Call {NON_EMERGENCY_PHONE}", f"tel:{NON_EMERGENCY_PHONE}",
+                         use_container_width=True)
+st.caption("Official channels verified from Lagos State Citizens Gate. Contact details can change; "
+           "confirm them on the official site before public deployment.")

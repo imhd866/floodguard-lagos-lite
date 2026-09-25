@@ -5,6 +5,8 @@ import pytest
 from src.ai.advisory import DISCLAIMER, build_advisory
 from src.ai.nim_client import NIMServiceError, rewrite_advisory
 from src.data.locations import PILOT_LOCATIONS
+from src.data.exposure import (load_exposure, low_elevation_indicator,
+                               population_exposure_indicator)
 from src.data.osm import fetch_infrastructure
 from src.data.reports import CommunityFloodReport, build_report_text
 from src.risk.scoring import RiskResult, calculate_risk, rainfall_indicator
@@ -37,6 +39,22 @@ def test_guide_has_all_ten_pilot_locations():
         "Ojota / Ketu", "Lekki", "Ajah", "Victoria Island", "Ikorodu",
         "Yaba", "Surulere", "Agege", "Lagos Island", "Ikoyi",
     ]
+
+def test_measured_exposure_cache_covers_all_locations():
+    for name in PILOT_LOCATIONS:
+        exposure = load_exposure(name)
+        assert exposure is not None
+        assert 0 <= exposure.low_elevation <= 1
+        assert 0 <= exposure.population_exposure <= 1
+        assert exposure.population_1_5km > 0
+
+def test_exposure_transformations_are_bounded():
+    assert low_elevation_indicator(-2) == 1
+    assert low_elevation_indicator(10) == .5
+    assert low_elevation_indicator(40) == 0
+    assert population_exposure_indicator(-1) == 0
+    assert population_exposure_indicator(50_000) == .5
+    assert population_exposure_indicator(200_000) == 1
 
 def test_osm_summary_parses_features_and_builds_indicators(monkeypatch):
     class FakeResponse:

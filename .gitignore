@@ -6,3 +6,5 @@ __pycache__/
 .streamlit/secrets.toml
 data/processed/*
 !data/processed/.gitkeep
+!data/processed/lagos_boundary.geojson
+!data/processed/location_exposure.json

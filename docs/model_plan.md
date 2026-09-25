@@ -4,7 +4,10 @@ Phase 1 uses the weighted rule model from the project guide. Live rainfall is th
 
 The OSM milestone replaces two baselines when a live query succeeds. Waterway proximity decreases linearly from 1.0 at the nearest mapped water feature to 0.0 at the 1.5 km query boundary. Infrastructure exposure combines capped road (50%), school (30%), and market (20%) densities. If Overpass fails, the UI explicitly reports the fallback to the location baseline.
 
-Phase 2 replaces baselines incrementally with measured features from OpenStreetMap, Copernicus DEM, WorldPop, and a licensed historical-water source. Every feature should retain its source, retrieval time, transformation, and quality flag.
+Phase 2 now replaces four baselines with measured features: OpenStreetMap supplies waterways
+and infrastructure live; Copernicus DEM GLO-30 supplies surface elevation; and WorldPop 2020
+supplies estimated population inside a 1.5 km circle. The latter two are cached with retrieval
+time and source. Historical-water recurrence remains the sole baseline awaiting Phase 3.
 
 An LLM may rewrite a computed advisory for clarity. It must not change the score, invent evidence, remove uncertainty language, or suppress the disclaimer. The deterministic template remains the fallback.
 

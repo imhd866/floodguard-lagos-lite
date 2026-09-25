@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "retrieved_at": "2026-09-25T06:52:26+00:00",
+  "transformations": {
+    "low_elevation": "1 - clamp(elevation metres / 20, 0, 1)",
+    "population_exposure": "clamp(population within 1.5 km / 100000, 0, 1)"
+  },
+  "locations": {
+    "Ojota / Ketu": {
+      "elevation_m": 13.4,
+      "population_1_5km": 188291,
+      "low_elevation": 0.3282,
+      "population_exposure": 1.0,
+      "retrieved_at": "2026-09-25T06:52:26+00:00",
+      "elevation_source": "Copernicus DEM GLO-30 (public AWS mirror)",
+      "population_source": "WorldPop Global per-country 2020 (100 m)"
+    },
+    "Lekki": {
+      "elevation_m": 4.9,
+      "population_1_5km": 17962,
+      "low_elevation": 0.753,
+      "population_exposure": 0.1796,
+      "retrieved_at": "2026-09-25T06:52:26+00:00",
+      "elevation_source": "Copernicus DEM GLO-30 (public AWS mirror)",
+      "population_source": "WorldPop Global per-country 2020 (100 m)"
+    },
+    "Ajah": {
+      "elevation_m": 8.5,
+      "population_1_5km": 19148,
+      "low_elevation": 0.5759,
+      "population_exposure": 0.1915,
+      "retrieved_at": "2026-09-25T06:52:26+00:00",
+      "elevation_source": "Copernicus DEM GLO-30 (public AWS mirror)",
+      "population_source": "WorldPop Global per-country 2020 (100 m)"
+    },
+    "Victoria Island": {
+      "elevation_m": 5.3,
+      "population_1_5km": 29527,
+      "low_elevation": 0.7344,
+      "population_exposure": 0.2953,
+      "retrieved_at": "2026-09-25T06:52:26+00:00",
+      "elevation_source": "Copernicus DEM GLO-30 (public AWS mirror)",
+      "population_source": "WorldPop Global per-country 2020 (100 m)"
+    },
+    "Ikorodu": {
+      "elevation_m": 20.1,
+      "population_1_5km": 49340,
+      "low_elevation": 0.0,
+      "population_exposure": 0.4934,
+      "retrieved_at": "2026-09-25T06:52:26+00:00",
+      "elevation_source": "Copernicus DEM GLO-30 (public AWS mirror)",
+      "population_source": "WorldPop Global per-country 2020 (100 m)"
+    },
+    "Yaba": {
+      "elevation_m": 7.5,
+      "population_1_5km": 181489,
+      "low_elevation": 0.6246,
+      "population_exposure": 1.0,
+      "retrieved_at": "2026-09-25T06:52:26+00:00",
+      "elevation_source": "Copernicus DEM GLO-30 (public AWS mirror)",
+      "population_source": "WorldPop Global per-country 2020 (100 m)"
+    },
+    "Surulere": {
+      "elevation_m": 4.4,
+      "population_1_5km": 170681,
+      "low_elevation": 0.7802,
+      "population_exposure": 1.0,
+      "retrieved_at": "2026-09-25T06:52:26+00:00",
+      "elevation_source": "Copernicus DEM GLO-30 (public AWS mirror)",
+      "population_source": "WorldPop Global per-country 2020 (100 m)"
+    },
+    "Agege": {
+      "elevation_m": 31.9,
+      "population_1_5km": 137618,
+      "low_elevation": 0.0,
+      "population_exposure": 1.0,
+      "retrieved_at": "2026-09-25T06:52:26+00:00",
+      "elevation_source": "Copernicus DEM GLO-30 (public AWS mirror)",
+      "population_source": "WorldPop Global per-country 2020 (100 m)"
+    },
+    "Lagos Island": {
+      "elevation_m": 7.0,
+      "population_1_5km": 52996,
+      "low_elevation": 0.6488,
+      "population_exposure": 0.53,
+      "retrieved_at": "2026-09-25T06:52:26+00:00",
+      "elevation_source": "Copernicus DEM GLO-30 (public AWS mirror)",
+      "population_source": "WorldPop Global per-country 2020 (100 m)"
+    },
+    "Ikoyi": {
+      "elevation_m": 11.1,
+      "population_1_5km": 49124,
+      "low_elevation": 0.4441,
+      "population_exposure": 0.4912,
+      "retrieved_at": "2026-09-25T06:52:26+00:00",
+      "elevation_source": "Copernicus DEM GLO-30 (public AWS mirror)",
+      "population_source": "WorldPop Global per-country 2020 (100 m)"
+    }
+  }
+}

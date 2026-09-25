@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from src.ai.advisory import DISCLAIMER, build_advisory
 from src.ai.nim_client import NIMServiceError, rewrite_advisory
+from src.data.exposure import load_exposure, load_lagos_boundary
 from src.data.locations import PILOT_LOCATIONS
 from src.data.osm import OSMServiceError, fetch_infrastructure
 from src.data.reports import (CITIZENS_GATE_URL, CITIZENS_GATE_WHATSAPP_URL,
@@ -26,6 +27,8 @@ st.title("FloodGuard Lagos Lite")
 st.caption("Indicative flood disruption risk for planning - not flood prediction")
 location_name = st.selectbox("Pilot area", list(PILOT_LOCATIONS))
 location = PILOT_LOCATIONS[location_name]
+exposure = load_exposure(location_name)
+lagos_boundary = load_lagos_boundary()
 st.caption(f"10 pilot areas available · map radius: 1.5 km around {location_name}")
 
 nim_api_key = os.getenv("NVIDIA_API_KEY", "")
@@ -54,6 +57,9 @@ if st.button("Check live risk", type="primary", use_container_width=True):
 
         rain = rainfall_indicator(forecast.next_24h_mm, forecast.peak_hourly_mm)
         factors = {k: v for k, v in location.items() if k not in {"latitude", "longitude"}}
+        if exposure is not None:
+            factors["low_elevation"] = exposure.low_elevation
+            factors["population_exposure"] = exposure.population_exposure
         if infrastructure is not None:
             factors["waterway_proximity"] = infrastructure.waterway_indicator
             factors["infrastructure_exposure"] = infrastructure.infrastructure_indicator
@@ -85,8 +91,13 @@ if st.button("Check live risk", type="primary", use_container_width=True):
                                        "name": feature.name,
                                        "category": feature.category.title(),
                                        "color": colors[feature.category]})
-            layers = [pdk.Layer("PathLayer", paths, get_path="path", get_color="color",
-                                width_min_pixels=2, pickable=True)]
+            layers = []
+            if lagos_boundary is not None:
+                layers.append(pdk.Layer("GeoJsonLayer", lagos_boundary, stroked=True,
+                                        filled=False, get_line_color=[16, 185, 129, 180],
+                                        line_width_min_pixels=2, pickable=False))
+            layers.append(pdk.Layer("PathLayer", paths, get_path="path", get_color="color",
+                                    width_min_pixels=2, pickable=True))
             if point_rows:
                 layers.append(pdk.Layer("ScatterplotLayer", point_rows,
                                         get_position="[longitude, latitude]", get_fill_color="color",
@@ -108,10 +119,31 @@ if st.button("Check live risk", type="primary", use_container_width=True):
                                    "Indicator (0-1)": list(risk.components.values())})
         st.dataframe(components, hide_index=True, use_container_width=True)
         if infrastructure is None:
-            st.info("Non-rainfall factors are explicit prototype baselines and require dataset validation.")
+            if exposure is None:
+                st.info("Non-rainfall factors are explicit prototype baselines and require dataset validation.")
+            else:
+                st.info("Elevation and population use the cached measured datasets below. "
+                        "Waterway, infrastructure, and historical-water factors are explicit "
+                        "prototype fallbacks because the live OSM query was unavailable.")
         else:
-            st.info("Waterway and infrastructure indicators are derived from the live OSM query. "
-                    "Elevation, historical-water, and population factors remain prototype baselines.")
+            if exposure is None:
+                st.info("Waterway and infrastructure indicators are derived from the live OSM query. "
+                        "Elevation, historical-water, and population factors remain prototype baselines.")
+            else:
+                st.info("Waterway and infrastructure indicators are derived from live OSM data. "
+                        "Elevation and population use the cached measured datasets below; only "
+                        "historical-water recurrence remains a prototype baseline.")
+        if exposure is not None:
+            st.subheader("Measured exposure data")
+            measured = pd.DataFrame({
+                "Measure": ["Surface elevation", "Estimated population within 1.5 km"],
+                "Value": [f"{exposure.elevation_m:.1f} m",
+                          f"{exposure.population_1_5km:,}"],
+                "Source": [exposure.elevation_source, exposure.population_source],
+            })
+            st.dataframe(measured, hide_index=True, use_container_width=True)
+            st.caption(f"Cached {exposure.retrieved_at} · Lagos boundary: geoBoundaries CC BY 4.0 · "
+                       "DEM is a surface model, not a surveyed terrain height.")
         st.subheader("Copy-ready advisory")
         draft_advisory = build_advisory(location_name, risk, forecast.next_24h_mm)
         advisory = draft_advisory

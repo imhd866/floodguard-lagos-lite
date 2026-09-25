@@ -14,9 +14,14 @@ class ExposureData:
     population_1_5km: int
     low_elevation: float
     population_exposure: float
+    historical_water: float
+    water_affected_pct: float
+    water_valid_pixels: int
+    water_retrieved_at: str
     retrieved_at: str
     elevation_source: str
     population_source: str
+    water_source: str
 
 
 def low_elevation_indicator(elevation_m: float) -> float:
@@ -27,6 +32,11 @@ def low_elevation_indicator(elevation_m: float) -> float:
 def population_exposure_indicator(population: float) -> float:
     """Cap exposure at an estimated 100,000 people within the 1.5 km radius."""
     return round(min(max(float(population), 0.0) / 100_000.0, 1.0), 4)
+
+
+def historical_water_indicator(water_affected_fraction: float) -> float:
+    """Cap risk at 25% of valid pixels showing recurrent historical water."""
+    return round(min(max(float(water_affected_fraction), 0.0) / 0.25, 1.0), 4)
 
 
 def load_exposure(location_name: str, path: Path = EXPOSURE_PATH) -> ExposureData | None:

@@ -120,6 +120,8 @@ def main() -> None:
     }
     (DATA_DIR / "location_exposure.json").write_text(
         json.dumps(payload, indent=2), encoding="utf-8")
+    from scripts.build_water_history_cache import main as build_water_history_cache
+    build_water_history_cache()
 
 
 if __name__ == "__main__":

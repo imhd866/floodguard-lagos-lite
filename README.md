@@ -17,6 +17,7 @@ FloodGuard Lagos Lite is a free-first decision-support prototype for indicative 
 - Local community-report preparation with official Lagos State handoff links
 - Cached Copernicus DEM elevation and WorldPop population exposure for all 10 areas
 - Lagos State boundary overlay from geoBoundaries
+- Historical surface-water recurrence from Digital Earth Africa WOfS (1984–2026)
 
 ## Run locally
 
@@ -27,7 +28,7 @@ pip install -r requirements.txt
 streamlit run app/streamlit_app.py
 ```
 
-The live weather and OpenStreetMap calls need internet access. Weather failure stops the result; OSM failure is clearly reported and the risk model uses the documented prototype baselines instead. Elevation and population are read from a small reproducible cache built by `scripts/build_exposure_cache.py`.
+The live weather and OpenStreetMap calls need internet access. Weather failure stops the result; OSM failure is clearly reported and the risk model uses documented fallbacks for those OSM factors. Elevation, population, and historical-water recurrence are read from a small reproducible cache built by `scripts/build_exposure_cache.py`.
 
 ## Configuration
 
@@ -37,7 +38,7 @@ Community reports are prepared locally for review. The prototype does not transm
 
 ## Risk model
 
-The score follows the project guide's weights: rainfall 35%, elevation 20%, waterway proximity 15%, historical water recurrence 15%, nearby infrastructure 10%, and population exposure 5%. Rainfall and OpenStreetMap factors are live; Copernicus elevation and WorldPop population are cached measured inputs. Historical-water recurrence remains a labelled prototype baseline.
+The score follows the project guide's weights: rainfall 35%, elevation 20%, waterway proximity 15%, historical water recurrence 15%, nearby infrastructure 10%, and population exposure 5%. Rainfall and OpenStreetMap factors are live; Copernicus elevation, WorldPop population, and Digital Earth Africa WOfS recurrence are cached measured inputs. The transformations remain prototype screening assumptions that require local calibration.
 
 ## Roadmap
 

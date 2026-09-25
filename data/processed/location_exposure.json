@@ -1,9 +1,10 @@
 {
   "schema_version": 1,
-  "retrieved_at": "2026-09-25T06:52:26+00:00",
+  "retrieved_at": "2026-09-25T09:04:14+00:00",
   "transformations": {
     "low_elevation": "1 - clamp(elevation metres / 20, 0, 1)",
-    "population_exposure": "clamp(population within 1.5 km / 100000, 0, 1)"
+    "population_exposure": "clamp(population within 1.5 km / 100000, 0, 1)",
+    "historical_water": "clamp(fraction of valid 1.5 km pixels with WOfS frequency >= 5% / 0.25, 0, 1)"
   },
   "locations": {
     "Ojota / Ketu": {
@@ -13,7 +14,12 @@
       "population_exposure": 1.0,
       "retrieved_at": "2026-09-25T06:52:26+00:00",
       "elevation_source": "Copernicus DEM GLO-30 (public AWS mirror)",
-      "population_source": "WorldPop Global per-country 2020 (100 m)"
+      "population_source": "WorldPop Global per-country 2020 (100 m)",
+      "historical_water": 0.0005,
+      "water_affected_pct": 0.0,
+      "water_valid_pixels": 7839,
+      "water_retrieved_at": "2026-09-25T09:04:14+00:00",
+      "water_source": "Digital Earth Africa WOfS all-time summary (1984\u20132026)"
     },
     "Lekki": {
       "elevation_m": 4.9,
@@ -22,7 +28,12 @@
       "population_exposure": 0.1796,
       "retrieved_at": "2026-09-25T06:52:26+00:00",
       "elevation_source": "Copernicus DEM GLO-30 (public AWS mirror)",
-      "population_source": "WorldPop Global per-country 2020 (100 m)"
+      "population_source": "WorldPop Global per-country 2020 (100 m)",
+      "historical_water": 0.0184,
+      "water_affected_pct": 0.5,
+      "water_valid_pixels": 7847,
+      "water_retrieved_at": "2026-09-25T09:04:14+00:00",
+      "water_source": "Digital Earth Africa WOfS all-time summary (1984\u20132026)"
     },
     "Ajah": {
       "elevation_m": 8.5,
@@ -31,7 +42,12 @@
       "population_exposure": 0.1915,
       "retrieved_at": "2026-09-25T06:52:26+00:00",
       "elevation_source": "Copernicus DEM GLO-30 (public AWS mirror)",
-      "population_source": "WorldPop Global per-country 2020 (100 m)"
+      "population_source": "WorldPop Global per-country 2020 (100 m)",
+      "historical_water": 0.863,
+      "water_affected_pct": 21.6,
+      "water_valid_pixels": 7856,
+      "water_retrieved_at": "2026-09-25T09:04:14+00:00",
+      "water_source": "Digital Earth Africa WOfS all-time summary (1984\u20132026)"
     },
     "Victoria Island": {
       "elevation_m": 5.3,
@@ -40,7 +56,12 @@
       "population_exposure": 0.2953,
       "retrieved_at": "2026-09-25T06:52:26+00:00",
       "elevation_source": "Copernicus DEM GLO-30 (public AWS mirror)",
-      "population_source": "WorldPop Global per-country 2020 (100 m)"
+      "population_source": "WorldPop Global per-country 2020 (100 m)",
+      "historical_water": 0.9826,
+      "water_affected_pct": 24.6,
+      "water_valid_pixels": 7812,
+      "water_retrieved_at": "2026-09-25T09:04:14+00:00",
+      "water_source": "Digital Earth Africa WOfS all-time summary (1984\u20132026)"
     },
     "Ikorodu": {
       "elevation_m": 20.1,
@@ -49,7 +70,12 @@
       "population_exposure": 0.4934,
       "retrieved_at": "2026-09-25T06:52:26+00:00",
       "elevation_source": "Copernicus DEM GLO-30 (public AWS mirror)",
-      "population_source": "WorldPop Global per-country 2020 (100 m)"
+      "population_source": "WorldPop Global per-country 2020 (100 m)",
+      "historical_water": 0.0,
+      "water_affected_pct": 0.0,
+      "water_valid_pixels": 7834,
+      "water_retrieved_at": "2026-09-25T09:04:14+00:00",
+      "water_source": "Digital Earth Africa WOfS all-time summary (1984\u20132026)"
     },
     "Yaba": {
       "elevation_m": 7.5,
@@ -58,7 +84,12 @@
       "population_exposure": 1.0,
       "retrieved_at": "2026-09-25T06:52:26+00:00",
       "elevation_source": "Copernicus DEM GLO-30 (public AWS mirror)",
-      "population_source": "WorldPop Global per-country 2020 (100 m)"
+      "population_source": "WorldPop Global per-country 2020 (100 m)",
+      "historical_water": 0.001,
+      "water_affected_pct": 0.0,
+      "water_valid_pixels": 7847,
+      "water_retrieved_at": "2026-09-25T09:04:14+00:00",
+      "water_source": "Digital Earth Africa WOfS all-time summary (1984\u20132026)"
     },
     "Surulere": {
       "elevation_m": 4.4,
@@ -67,7 +98,12 @@
       "population_exposure": 1.0,
       "retrieved_at": "2026-09-25T06:52:26+00:00",
       "elevation_source": "Copernicus DEM GLO-30 (public AWS mirror)",
-      "population_source": "WorldPop Global per-country 2020 (100 m)"
+      "population_source": "WorldPop Global per-country 2020 (100 m)",
+      "historical_water": 0.0,
+      "water_affected_pct": 0.0,
+      "water_valid_pixels": 7848,
+      "water_retrieved_at": "2026-09-25T09:04:14+00:00",
+      "water_source": "Digital Earth Africa WOfS all-time summary (1984\u20132026)"
     },
     "Agege": {
       "elevation_m": 31.9,
@@ -76,7 +112,12 @@
       "population_exposure": 1.0,
       "retrieved_at": "2026-09-25T06:52:26+00:00",
       "elevation_source": "Copernicus DEM GLO-30 (public AWS mirror)",
-      "population_source": "WorldPop Global per-country 2020 (100 m)"
+      "population_source": "WorldPop Global per-country 2020 (100 m)",
+      "historical_water": 0.0005,
+      "water_affected_pct": 0.0,
+      "water_valid_pixels": 7853,
+      "water_retrieved_at": "2026-09-25T09:04:14+00:00",
+      "water_source": "Digital Earth Africa WOfS all-time summary (1984\u20132026)"
     },
     "Lagos Island": {
       "elevation_m": 7.0,
@@ -85,7 +126,12 @@
       "population_exposure": 0.53,
       "retrieved_at": "2026-09-25T06:52:26+00:00",
       "elevation_source": "Copernicus DEM GLO-30 (public AWS mirror)",
-      "population_source": "WorldPop Global per-country 2020 (100 m)"
+      "population_source": "WorldPop Global per-country 2020 (100 m)",
+      "historical_water": 0.0755,
+      "water_affected_pct": 1.9,
+      "water_valid_pixels": 7846,
+      "water_retrieved_at": "2026-09-25T09:04:14+00:00",
+      "water_source": "Digital Earth Africa WOfS all-time summary (1984\u20132026)"
     },
     "Ikoyi": {
       "elevation_m": 11.1,
@@ -94,7 +140,20 @@
       "population_exposure": 0.4912,
       "retrieved_at": "2026-09-25T06:52:26+00:00",
       "elevation_source": "Copernicus DEM GLO-30 (public AWS mirror)",
-      "population_source": "WorldPop Global per-country 2020 (100 m)"
+      "population_source": "WorldPop Global per-country 2020 (100 m)",
+      "historical_water": 0.1465,
+      "water_affected_pct": 3.7,
+      "water_valid_pixels": 7835,
+      "water_retrieved_at": "2026-09-25T09:04:14+00:00",
+      "water_source": "Digital Earth Africa WOfS all-time summary (1984\u20132026)"
     }
+  },
+  "water_history": {
+    "source": "Digital Earth Africa Water Observations from Space All-Time Summary",
+    "source_url": "https://deafrica-services.s3.af-south-1.amazonaws.com/wofs_ls_summary_alltime/1-0-0/x184/y085/1984--P42Y/wofs_ls_summary_alltime_x184y085_1984--P42Y_frequency.tif",
+    "license": "CC BY 4.0",
+    "spatial_resolution_m": 30,
+    "temporal_range": "1984\u20132026",
+    "retrieved_at": "2026-09-25T09:04:14+00:00"
   }
 }

@@ -60,6 +60,7 @@ if st.button("Check live risk", type="primary", use_container_width=True):
         if exposure is not None:
             factors["low_elevation"] = exposure.low_elevation
             factors["population_exposure"] = exposure.population_exposure
+            factors["historical_water"] = exposure.historical_water
         if infrastructure is not None:
             factors["waterway_proximity"] = infrastructure.waterway_indicator
             factors["infrastructure_exposure"] = infrastructure.infrastructure_indicator
@@ -123,7 +124,8 @@ if st.button("Check live risk", type="primary", use_container_width=True):
                 st.info("Non-rainfall factors are explicit prototype baselines and require dataset validation.")
             else:
                 st.info("Elevation and population use the cached measured datasets below. "
-                        "Waterway, infrastructure, and historical-water factors are explicit "
+                        "Historical water also uses the cached WOfS dataset. Waterway and infrastructure are "
+                        "explicit "
                         "prototype fallbacks because the live OSM query was unavailable.")
         else:
             if exposure is None:
@@ -131,19 +133,24 @@ if st.button("Check live risk", type="primary", use_container_width=True):
                         "Elevation, historical-water, and population factors remain prototype baselines.")
             else:
                 st.info("Waterway and infrastructure indicators are derived from live OSM data. "
-                        "Elevation and population use the cached measured datasets below; only "
-                        "historical-water recurrence remains a prototype baseline.")
+                        "Elevation, population, and historical-water recurrence use the cached "
+                        "measured datasets below.")
         if exposure is not None:
             st.subheader("Measured exposure data")
             measured = pd.DataFrame({
-                "Measure": ["Surface elevation", "Estimated population within 1.5 km"],
+                "Measure": ["Surface elevation", "Estimated population within 1.5 km",
+                            "Historically water-affected area within 1.5 km"],
                 "Value": [f"{exposure.elevation_m:.1f} m",
-                          f"{exposure.population_1_5km:,}"],
-                "Source": [exposure.elevation_source, exposure.population_source],
+                          f"{exposure.population_1_5km:,}",
+                          f"{exposure.water_affected_pct:.1f}%"],
+                "Source": [exposure.elevation_source, exposure.population_source,
+                           exposure.water_source],
             })
             st.dataframe(measured, hide_index=True, use_container_width=True)
-            st.caption(f"Cached {exposure.retrieved_at} · Lagos boundary: geoBoundaries CC BY 4.0 · "
-                       "DEM is a surface model, not a surveyed terrain height.")
+            st.caption(f"Elevation/population cached {exposure.retrieved_at} · Water history cached "
+                       f"{exposure.water_retrieved_at} · Lagos boundary: geoBoundaries CC BY 4.0 · "
+                       "WOfS: 30 m Landsat summary, CC BY 4.0 · DEM is a surface model, "
+                       "not a surveyed terrain height.")
         st.subheader("Copy-ready advisory")
         draft_advisory = build_advisory(location_name, risk, forecast.next_24h_mm)
         advisory = draft_advisory

@@ -6,7 +6,8 @@ from src.ai.advisory import DISCLAIMER, build_advisory
 from src.ai.nim_client import NIMServiceError, rewrite_advisory
 from src.data.locations import PILOT_LOCATIONS
 from src.data.exposure import (load_exposure, low_elevation_indicator,
-                               population_exposure_indicator)
+                               population_exposure_indicator,
+                               historical_water_indicator)
 from src.data.osm import fetch_infrastructure
 from src.data.reports import CommunityFloodReport, build_report_text
 from src.risk.scoring import RiskResult, calculate_risk, rainfall_indicator
@@ -46,6 +47,8 @@ def test_measured_exposure_cache_covers_all_locations():
         assert exposure is not None
         assert 0 <= exposure.low_elevation <= 1
         assert 0 <= exposure.population_exposure <= 1
+        assert 0 <= exposure.historical_water <= 1
+        assert exposure.water_valid_pixels > 0
         assert exposure.population_1_5km > 0
 
 def test_exposure_transformations_are_bounded():
@@ -55,6 +58,9 @@ def test_exposure_transformations_are_bounded():
     assert population_exposure_indicator(-1) == 0
     assert population_exposure_indicator(50_000) == .5
     assert population_exposure_indicator(200_000) == 1
+    assert historical_water_indicator(-.1) == 0
+    assert historical_water_indicator(.125) == .5
+    assert historical_water_indicator(.5) == 1
 
 def test_osm_summary_parses_features_and_builds_indicators(monkeypatch):
     class FakeResponse:
